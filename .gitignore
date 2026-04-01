@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+
+# Build output
+frontend/dist/
+backend/dist/
+
+# Database
+backend/data/*.db
+
+# Environment (contains secrets)
+.env
+
+# Logs
+*.log
+*.err.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+/tmp/
+
+# Design assets (internal only)
+stitch/
