@@ -29,7 +29,7 @@ const DRY_RUN = __ENV.DRY_RUN === 'true';
 
 const APP_BASE_URL = getAppBaseUrl(TARGET_URL);
 const LOGIN_PAGE_URL = getLoginPageUrl(TARGET_URL);
-const INDEX_PAGE_URL = joinUrl(APP_BASE_URL, 'Index.aspx');
+const LANDING_PAGE_URL = getLandingPageUrl(TARGET_URL);
 const AUTH_PAGE_URL = getAuthPageUrl();
 
 export const options = {
@@ -98,19 +98,19 @@ export default function (data) {
     successfulLogins.add(1);
 
     group('02_Post_Login_Actions', function () {
-        // Access index page
-        const indexRes = http.get(INDEX_PAGE_URL, {
+        // Access landing page
+        const landingRes = http.get(LANDING_PAGE_URL, {
             headers: loginResult.headers || {},
             redirects: 10,
         });
 
-        check(indexRes, {
-            'Index page status 200': (r) => r.status === 200,
-            'Index page has content': (r) => r.body && r.body.length > 0,
+        check(landingRes, {
+            'Landing page status 200': (r) => r.status === 200,
+            'Landing page has content': (r) => r.body && r.body.length > 0,
         });
 
-        pageLoadDuration.add(indexRes.timings.duration);
-        errorRate.add(indexRes.status !== 200);
+        pageLoadDuration.add(landingRes.timings.duration);
+        errorRate.add(landingRes.status !== 200);
 
         sleep(1);
 
@@ -206,7 +206,7 @@ function performLogin() {
         });
 
         // Step 6: Verify app landing page is actually reachable after auth
-        const landingRes = http.get(INDEX_PAGE_URL, {
+        const landingRes = http.get(LANDING_PAGE_URL, {
             redirects: 10,
             headers: {
                 Referer: authRes.url || authPageUrl,
@@ -217,9 +217,9 @@ function performLogin() {
             'Redirected back to app': (r) =>
                 r.status === 200 &&
                 isAppUrl(r.url),
-            'Index page status 200': (r) => r.status === 200,
-            'Index page has content': (r) => r.body && r.body.length > 0,
-            'Index page is not login form': (r) => !looksLikeLoginPage(r.body),
+            'Landing page status 200': (r) => r.status === 200,
+            'Landing page has content': (r) => r.body && r.body.length > 0,
+            'Landing page is not login form': (r) => !looksLikeLoginPage(r.body),
         });
 
         pageLoadDuration.add(landingRes.timings.duration);
@@ -266,6 +266,17 @@ function getAppBaseUrl(targetUrl) {
     }
 
     return `${origin}${pathPart}`;
+}
+
+function getLandingPageUrl(targetUrl) {
+    if (/\/Login\.aspx([?#].*)?$/i.test(targetUrl)) {
+        return joinUrl(getAppBaseUrl(targetUrl), 'Index.aspx');
+    }
+    const cleanUrl = stripQueryAndHash(targetUrl);
+    if (cleanUrl.endsWith('/')) {
+        return joinUrl(cleanUrl, 'Index.aspx');
+    }
+    return cleanUrl;
 }
 
 function getLoginPageUrl(targetUrl) {

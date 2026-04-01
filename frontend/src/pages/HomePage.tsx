@@ -179,6 +179,7 @@ export default function HomePage() {
   const estimatedReqPerMin = Math.round(config.vus * 24);
 
   return (
+    <>
     <div className="animate-fade-in pb-28">
       {/* Section Header */}
       <div className="mb-8">
@@ -513,6 +514,7 @@ export default function HomePage() {
           </button>
         </div>
       </div>
+      </div>
 
       {/* ─── Save Config Modal ─── */}
       {showSaveModal && (
@@ -562,6 +564,6 @@ export default function HomePage() {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
