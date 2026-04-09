@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../lib/api';
 import { TestRecord } from '../../types';
@@ -131,7 +131,7 @@ export default function ResultsPage() {
 
   const errorBadge = (errorRate?: number) => {
     if (errorRate == null) {
-      return <span className="text-slate-500">â€”</span>;
+      return <span className="text-slate-500">—</span>;
     }
 
     const pct = (errorRate * 100).toFixed(2);
@@ -310,13 +310,13 @@ export default function ResultsPage() {
                   <td className="py-4 px-4 font-mono text-accent">#{test.id}</td>
                   <td className="py-4 px-4 text-slate-300 font-medium max-w-[320px] truncate">{test.target_url}</td>
                   <td className={`py-4 px-4 text-right font-mono ${metricColor(test.avg_response_time)}`}>
-                    {test.avg_response_time != null ? test.avg_response_time.toFixed(1) : 'â€”'}
+                    {test.avg_response_time != null ? test.avg_response_time.toFixed(1) : '—'}
                   </td>
                   <td className="py-4 px-4 text-right font-mono text-text-surface">
-                    {test.p95_response_time != null ? test.p95_response_time.toFixed(1) : 'â€”'}
+                    {test.p95_response_time != null ? test.p95_response_time.toFixed(1) : '—'}
                   </td>
                   <td className="py-4 px-4 text-right font-mono text-text-surface">
-                    {test.throughput != null ? test.throughput.toFixed(1) : 'â€”'}
+                    {test.throughput != null ? test.throughput.toFixed(1) : '—'}
                   </td>
                   <td className="py-4 px-4 text-center">{errorBadge(test.error_rate)}</td>
                   <td className="py-4 px-4 text-center">{statusBadge(test.status)}</td>
@@ -328,7 +328,7 @@ export default function ResultsPage() {
                           hour: '2-digit',
                           minute: '2-digit',
                         })
-                      : 'â€”'}
+                      : '—'}
                   </td>
                   <td className="py-4 px-6 text-right">
                     <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">

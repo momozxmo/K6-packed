@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { api } from '../../lib/api';
 import { TestConfig, SavedConfig } from '../../types';
@@ -96,7 +96,7 @@ export default function HomePage() {
     }
     if (!config.username) errs.username = 'Username is required';
     if (!config.password) errs.password = 'Password is required';
-    if (config.vus < 1 || config.vus > 9999) errs.vus = 'VUs must be 1-9,999';
+    if (config.vus < 1 || config.vus > 500) errs.vus = 'VUs must be 1-500';
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -274,48 +274,33 @@ export default function HomePage() {
               <h3 className="font-label uppercase tracking-widest text-sm font-bold">Test Settings</h3>
             </div>
             <div className="space-y-8">
-              {/* VU Slider + Manual Input */}
+              {/* VU Slider */}
               <div>
-                <div className="flex justify-between items-center mb-4">
+                <div className="flex justify-between items-end mb-4">
                   <label className="label mb-0">Virtual Users (VUs)</label>
-                  <div className="flex items-center gap-2">
+                  <div className="bg-surface-lowest px-3 py-1 rounded border border-outline-variant/20">
                     <input
                       type="number"
                       min={1}
-                      max={9999}
-                      className="bg-surface-lowest border border-outline-variant/30 focus:border-accent/60 text-accent font-mono font-bold text-center w-20 py-1.5 px-2 rounded-lg focus:ring-1 focus:ring-accent/30 focus:outline-none transition-all text-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      max={500}
+                      className="bg-transparent border-none text-accent font-mono font-bold text-right w-12 p-0 focus:ring-0 focus:outline-none"
                       value={config.vus}
-                      onChange={e => {
-                        const val = parseInt(e.target.value);
-                        if (!isNaN(val) && val >= 1) {
-                          setConfig(prev => ({ ...prev, vus: Math.min(9999, val) }));
-                        } else if (e.target.value === '') {
-                          setConfig(prev => ({ ...prev, vus: 1 }));
-                        }
-                      }}
-                      onBlur={e => {
-                        const val = parseInt(e.target.value);
-                        if (isNaN(val) || val < 1) {
-                          setConfig(prev => ({ ...prev, vus: 1 }));
-                        }
-                      }}
+                      onChange={e => setConfig(prev => ({ ...prev, vus: Math.min(500, Math.max(1, parseInt(e.target.value) || 1)) }))}
                     />
-                    <span className="text-[10px] text-slate-500 font-label uppercase tracking-wider">VUs</span>
                   </div>
                 </div>
                 <input
                   type="range"
                   min={1}
-                  max={9999}
+                  max={500}
                   className="w-full h-1 bg-surface-high rounded-lg appearance-none cursor-pointer"
                   value={config.vus}
                   onChange={e => setConfig(prev => ({ ...prev, vus: parseInt(e.target.value) }))}
                 />
                 <div className="flex justify-between mt-2 font-mono text-[10px] text-slate-600">
                   <span>1 VU</span>
-                  <span>9,999 VUs</span>
+                  <span>500 VUs</span>
                 </div>
-                <p className="text-[10px] text-slate-600 mt-1 italic">à¹ƒà¸Šà¹‰ slider à¸«à¸£à¸·à¸­à¸žà¸´à¸¡à¸žà¹Œà¸•à¸±à¸§à¹€à¸¥à¸‚à¹€à¸­à¸‡à¹„à¸”à¹‰</p>
                 {errors.vus && <p className="text-danger-light text-xs mt-1">{errors.vus}</p>}
               </div>
 
@@ -468,7 +453,7 @@ export default function HomePage() {
       {dryRunResult && (
         <div className={`mt-6 card border ${dryRunResult.success ? 'border-success/30 bg-success/5' : 'border-danger/30 bg-danger/5'}`}>
           <h4 className={`font-semibold text-sm ${dryRunResult.success ? 'text-success' : 'text-danger-light'} mb-2`}>
-            {dryRunResult.success ? 'âœ… Dry Run Passed' : 'âŒ Dry Run Failed'}
+            {dryRunResult.success ? '✅ Dry Run Passed' : '❌ Dry Run Failed'}
           </h4>
           <p className="text-slate-400 text-sm mb-3">{dryRunResult.message}</p>
           {dryRunResult.output && (
@@ -493,7 +478,7 @@ export default function HomePage() {
           <div className="h-8 w-px bg-outline-variant/20" />
           <div className="flex flex-col">
             <span className="text-[10px] font-label uppercase text-slate-500 tracking-widest">Test Config</span>
-            <span className="font-mono text-sm text-slate-200">{config.vus} VUs Ã— {config.duration}</span>
+            <span className="font-mono text-sm text-slate-200">{config.vus} VUs × {config.duration}</span>
           </div>
           <div className="h-8 w-px bg-outline-variant/20" />
           <div className="flex gap-2">
@@ -531,7 +516,7 @@ export default function HomePage() {
       </div>
       </div>
 
-      {/* â”€â”€â”€ Save Config Modal â”€â”€â”€ */}
+      {/* ─── Save Config Modal ─── */}
       {showSaveModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50" onClick={() => setShowSaveModal(false)}>
           <div className="glass-panel rounded-xl p-6 w-96 shadow-2xl" onClick={e => e.stopPropagation()}>
@@ -553,7 +538,7 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* â”€â”€â”€ Load Config Modal â”€â”€â”€ */}
+      {/* ─── Load Config Modal ─── */}
       {showLoadModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50" onClick={() => setShowLoadModal(false)}>
           <div className="glass-panel rounded-xl p-6 w-[500px] max-h-[80vh] overflow-y-auto shadow-2xl" onClick={e => e.stopPropagation()}>
