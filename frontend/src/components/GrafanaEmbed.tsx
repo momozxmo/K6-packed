@@ -18,7 +18,7 @@ interface GrafanaEmbedProps {
 export default function GrafanaEmbed({
   from = 'now-15m',
   to = 'now',
-  height = 1200,
+  height = 800,
   panelId,
   className = '',
 }: GrafanaEmbedProps) {
@@ -28,7 +28,7 @@ export default function GrafanaEmbed({
   // Build Grafana embed URL
   // &kiosk hides the Grafana chrome (navbar, sidebar)
   // &refresh=5s auto-refreshes the dashboard
-  let embedUrl = `${GRAFANA_BASE_URL}/d/${DASHBOARD_UID}/k6-load-testing-results?orgId=1&kiosk&refresh=5s&from=${from}&to=${to}&theme=dark`;
+  let embedUrl = `${GRAFANA_BASE_URL}/d/${DASHBOARD_UID}/k6-load-testing-results?orgId=1&kiosk&refresh=5s&from=${from}&to=${to}&theme=dark&autofitpanels`;
 
   // If panelId is specified, embed just that single panel
   if (panelId !== undefined) {

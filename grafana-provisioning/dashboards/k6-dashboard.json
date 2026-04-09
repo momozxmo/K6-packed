@@ -265,7 +265,7 @@
           }
         ]
       },
-      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 4 },
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 4 },
       "id": 10,
       "options": {
         "tooltip": { "mode": "multi", "sort": "desc" },
@@ -313,7 +313,7 @@
           "color": { "fixedColor": "#00ff88", "mode": "fixed" }
         }
       },
-      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 4 },
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 4 },
       "id": 11,
       "options": {
         "tooltip": { "mode": "single" },
@@ -347,7 +347,7 @@
           "color": { "fixedColor": "#a8e8ff", "mode": "fixed" }
         }
       },
-      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 13 },
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 11 },
       "id": 12,
       "options": {
         "tooltip": { "mode": "single" },
@@ -398,7 +398,7 @@
           }
         ]
       },
-      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 13 },
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 11 },
       "id": 13,
       "options": {
         "tooltip": { "mode": "single" },
