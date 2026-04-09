@@ -18,7 +18,7 @@ interface GrafanaEmbedProps {
 export default function GrafanaEmbed({
   from = 'now-15m',
   to = 'now',
-  height = 900,
+  height = 1200,
   panelId,
   className = '',
 }: GrafanaEmbedProps) {
