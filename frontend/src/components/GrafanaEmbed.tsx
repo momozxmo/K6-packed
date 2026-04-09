@@ -69,12 +69,11 @@ export default function GrafanaEmbed({
 
       {/* Iframe Container */}
       <div
-        className="relative rounded-xl overflow-hidden border border-outline-variant/10 bg-[#0b0c10]"
-        style={{ height: `${height}px`, overflow: 'hidden' }}
+        className="relative rounded-xl border border-outline-variant/10 bg-[#0b0c10]"
       >
         {/* Loading Overlay */}
         {isLoading && !hasError && (
-          <div className="absolute inset-0 flex items-center justify-center bg-surface-lowest z-10">
+          <div className="absolute inset-0 flex items-center justify-center bg-surface-lowest z-10" style={{ minHeight: '400px' }}>
             <div className="flex flex-col items-center gap-3">
               <span className="material-symbols-outlined text-3xl text-accent animate-spin">progress_activity</span>
               <span className="font-label text-xs text-slate-500 uppercase tracking-widest">
@@ -86,7 +85,7 @@ export default function GrafanaEmbed({
 
         {/* Error State */}
         {hasError && (
-          <div className="absolute inset-0 flex items-center justify-center bg-surface-lowest z-10">
+          <div className="flex items-center justify-center bg-surface-lowest z-10" style={{ minHeight: '400px' }}>
             <div className="flex flex-col items-center gap-4 text-center px-8">
               <span className="material-symbols-outlined text-4xl text-slate-600">cloud_off</span>
               <div>
@@ -110,7 +109,7 @@ export default function GrafanaEmbed({
         <iframe
           src={embedUrl}
           width="100%"
-          height={height + 50}
+          height={height}
           frameBorder="0"
           scrolling="no"
           onLoad={() => setIsLoading(false)}
@@ -118,7 +117,7 @@ export default function GrafanaEmbed({
           style={{
             border: 'none',
             backgroundColor: '#0b0c10',
-            overflow: 'hidden',
+            display: 'block',
           }}
           title="Grafana K6 Dashboard"
           sandbox="allow-scripts allow-same-origin allow-popups"
