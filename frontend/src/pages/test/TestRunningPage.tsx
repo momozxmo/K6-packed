@@ -1,8 +1,9 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+﻿import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useWebSocket } from '../hooks/useWebSocket';
-import { api } from '../lib/api';
-import { TestRecord } from '../types';
+import { useWebSocket } from '../../hooks/useWebSocket';
+import { api } from '../../lib/api';
+import { TestRecord } from '../../types';
+import GrafanaEmbed from '../../components/GrafanaEmbed';
 
 export default function TestRunningPage() {
   const { id } = useParams<{ id: string }>();
@@ -97,12 +98,10 @@ export default function TestRunningPage() {
     navigator.clipboard.writeText(logs.join('\n'));
   };
 
-  // Generate sparkline bar heights based on requests
-  const sparkBars = [20, 30, 50, 40, 80, 70, 40, 90, 50, 90];
 
   return (
     <div className="animate-fade-in flex flex-col gap-6">
-      {/* ═══ Progress Section ═══ */}
+      {/* â•â•â• Progress Section â•â•â• */}
       <section className="bg-surface-lowest rounded-xl p-6 border border-outline-variant/10 shadow-lg">
         <div className="flex justify-between items-end mb-4">
           <div className="flex flex-col gap-1">
@@ -158,91 +157,16 @@ export default function TestRunningPage() {
         </div>
       </section>
 
-      {/* ═══ Metric Grid ═══ */}
-      <section className="grid grid-cols-1 md:grid-cols-4 gap-4 stagger-children">
-        {/* Active VUs */}
-        <div className="bg-surface rounded-xl p-5 border border-outline-variant/10 flex flex-col gap-4 relative overflow-hidden group hover:border-accent/20 transition-all duration-300">
-          <div className="absolute top-0 right-0 p-2 opacity-[0.04]">
-            <span className="material-symbols-outlined text-6xl text-text-surface" style={{ fontVariationSettings: "'opsz' 48" }}>group</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
-              <span className="material-symbols-outlined text-accent text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>group</span>
-            </div>
-            <span className="font-label text-xs text-slate-400 uppercase tracking-wider">Active VUs</span>
-          </div>
-          <div className="flex flex-col">
-            <span className="font-mono text-4xl font-bold text-text-surface">{progress?.currentVUs ?? test?.vus ?? '—'}</span>
-            <span className="text-[10px] text-success flex items-center gap-1 mt-1 font-medium">
-              <span className="material-symbols-outlined text-[10px]">trending_up</span> Target: {test?.vus || '—'}
-            </span>
-          </div>
-        </div>
-
-        {/* Reqs/Sec */}
-        <div className="bg-surface rounded-xl p-5 border border-outline-variant/10 flex flex-col gap-4 relative overflow-hidden group hover:border-accent/20 transition-all duration-300">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
-              <span className="material-symbols-outlined text-accent text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>bolt</span>
-            </div>
-            <span className="font-label text-xs text-slate-400 uppercase tracking-wider">Reqs / Sec</span>
-          </div>
-          <div className="flex flex-col gap-2">
-            <span className="font-mono text-4xl font-bold text-text-surface">{progress?.requestsPerSec?.toFixed(1) ?? '—'}</span>
-            <div className="h-10 w-full flex items-end gap-1 opacity-60">
-              {sparkBars.map((h, i) => (
-                <div
-                  key={i}
-                  className="flex-1 bg-accent rounded-sm transition-all duration-500"
-                  style={{ height: `${h}%`, opacity: 0.2 + (h / 100) * 0.8 }}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Avg Resp Time */}
-        <div className="bg-surface rounded-xl p-5 border border-outline-variant/10 flex flex-col gap-4 relative overflow-hidden group hover:border-success/20 transition-all duration-300">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center">
-              <span className="material-symbols-outlined text-success text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>timer</span>
-            </div>
-            <span className="font-label text-xs text-slate-400 uppercase tracking-wider">Avg Resp Time</span>
-          </div>
-          <div className="flex flex-col">
-            <div className="flex items-baseline gap-2">
-              <span className="font-mono text-4xl font-bold text-success">{progress?.avgResponseTime?.toFixed(0) ?? '—'}</span>
-              <span className="font-mono text-sm text-slate-500">ms</span>
-            </div>
-            <div className="flex gap-1 mt-3">
-              <div className={`h-1 flex-1 rounded-full ${(progress?.avgResponseTime ?? 0) < 500 ? 'bg-success' : 'bg-warning'}`} />
-              <div className="h-1 flex-1 bg-surface-high rounded-full" />
-              <div className="h-1 flex-1 bg-surface-high rounded-full" />
-            </div>
-            <span className="text-[10px] text-success mt-2 font-medium tracking-tight">
-              {(progress?.avgResponseTime ?? 0) < 500 ? 'Optimal Performance' : 'Moderate Load'}
-            </span>
-          </div>
-        </div>
-
-        {/* Errors */}
-        <div className="bg-surface rounded-xl p-5 border border-outline-variant/10 flex flex-col gap-4 relative overflow-hidden group hover:border-danger/20 transition-all duration-300">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-danger/10 flex items-center justify-center">
-              <span className="material-symbols-outlined text-danger-light text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>report</span>
-            </div>
-            <span className="font-label text-xs text-slate-400 uppercase tracking-wider">Errors</span>
-          </div>
-          <div className="flex flex-col">
-            <span className="font-mono text-4xl font-bold text-danger-light">{progress?.errorCount ?? 0}</span>
-            <span className="text-[10px] text-danger-light/80 flex items-center gap-1 mt-1 font-medium">
-              {progress?.errorCount ? `${((progress.errorCount / (progress.completedIterations || 1)) * 100).toFixed(2)}% Failure Rate` : '0.00% Failure Rate'}
-            </span>
-          </div>
-        </div>
+      {/* â•â•â• Grafana Live Dashboard (InfluxDB) â•â•â• */}
+      <section>
+        <GrafanaEmbed
+          from="now-15m"
+          to="now"
+          height={500}
+        />
       </section>
 
-      {/* ═══ Live Telemetry Log Panel ═══ */}
+      {/* â•â•â• Live Telemetry Log Panel â•â•â• */}
       <section className="flex-1 flex flex-col bg-surface-lowest rounded-xl border border-outline-variant/10 overflow-hidden min-h-[400px]">
         <div className="bg-surface-low px-6 py-3 flex justify-between items-center border-b border-outline-variant/5">
           <div className="flex items-center gap-3">
@@ -271,7 +195,7 @@ export default function TestRunningPage() {
                     ? 'text-danger-light font-bold'
                     : line.includes('WARN')
                       ? 'text-danger-light/80'
-                      : line.includes('✅') || line.includes('✓') || line.includes('200 OK')
+                      : line.includes('âœ…') || line.includes('âœ“') || line.includes('200 OK')
                         ? 'text-text-surface'
                         : 'text-slate-500'
                 }>
@@ -284,7 +208,7 @@ export default function TestRunningPage() {
         </div>
       </section>
 
-      {/* ═══ Completed / Stop Action Bar ═══ */}
+      {/* â•â•â• Completed / Stop Action Bar â•â•â• */}
       {(completed || !completed) && (
         <div className="flex justify-end">
           {completed ? (

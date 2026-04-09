@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+﻿import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   ResponsiveContainer,
@@ -13,8 +13,8 @@ import {
   Bar,
   Cell,
 } from 'recharts';
-import { api } from '../lib/api';
-import { TestRecord, TestResult } from '../types';
+import { api } from '../../lib/api';
+import { TestRecord, TestResult } from '../../types';
 
 const COLORS = {
   left: '#00d4ff',

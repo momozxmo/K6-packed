@@ -1,13 +1,13 @@
-import express from 'express';
+﻿import express from 'express';
 import cors from 'cors';
 import { createServer } from 'http';
 import path from 'path';
 import fs from 'fs';
 import dotenv from 'dotenv';
 import { initializeDatabase } from './models/schema';
-import { DbService } from './services/db.service';
-import { K6RunnerService } from './services/k6-runner.service';
-import { EncryptionService } from './services/encryption.service';
+import { DbService } from './services/core/db.service';
+import { K6RunnerService } from './services/k6/k6-runner.service';
+import { EncryptionService } from './services/core/encryption.service';
 import { setupWebSocket } from './websocket/progress';
 import { createTestRoutes } from './routes/test.routes';
 import { createResultRoutes } from './routes/result.routes';
@@ -81,7 +81,7 @@ async function main() {
 
     // Start server
     server.listen(PORT, HOST, () => {
-        console.log(`\n🚀 K6 Load Test Dashboard Backend`);
+        console.log(`\nðŸš€ K6 Load Test Dashboard Backend`);
         console.log(`   Server:    http://${HOST}:${PORT}`);
         console.log(`   WebSocket: ws://${HOST}:${PORT}/ws/test/:id`);
         console.log(`   Database:  ${DB_PATH}`);
@@ -91,7 +91,7 @@ async function main() {
 
     // Graceful shutdown
     const shutdown = () => {
-        console.log('\n🛑 Shutting down...');
+        console.log('\nðŸ›‘ Shutting down...');
         k6Runner.killAll();
         dbService.close();
         server.close(() => {

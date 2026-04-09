@@ -1,13 +1,13 @@
-import { Router, Request, Response } from 'express';
-import { DbService } from '../services/db.service';
+﻿import { Router, Request, Response } from 'express';
+import { DbService } from '../services/core/db.service';
 
 export function createResultRoutes(dbService: DbService): Router {
     const router = Router();
 
-    // GET /api/results/:testId — Get results for a test
+    // GET /api/results/:testId â€” Get results for a test
     router.get('/:testId', (req: Request, res: Response) => {
         try {
-            const testId = parseInt(req.params.testId);
+            const testId = parseInt(req.params.testId as string);
             const result = dbService.getResult(testId);
             if (!result) {
                 return res.status(404).json({ error: 'Results not found for this test' });
@@ -37,10 +37,10 @@ export function createResultRoutes(dbService: DbService): Router {
         }
     });
 
-    // GET /api/results/:testId/export/json — Export raw JSON
+    // GET /api/results/:testId/export/json â€” Export raw JSON
     router.get('/:testId/export/json', (req: Request, res: Response) => {
         try {
-            const testId = parseInt(req.params.testId);
+            const testId = parseInt(req.params.testId as string);
             const result = dbService.getResult(testId);
             if (!result) {
                 return res.status(404).json({ error: 'Results not found' });
@@ -56,10 +56,10 @@ export function createResultRoutes(dbService: DbService): Router {
         }
     });
 
-    // GET /api/results/:testId/export/csv — Export CSV summary
+    // GET /api/results/:testId/export/csv â€” Export CSV summary
     router.get('/:testId/export/csv', (req: Request, res: Response) => {
         try {
-            const testId = parseInt(req.params.testId);
+            const testId = parseInt(req.params.testId as string);
             const result = dbService.getResult(testId);
             if (!result) {
                 return res.status(404).json({ error: 'Results not found' });

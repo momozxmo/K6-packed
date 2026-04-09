@@ -32,3 +32,7 @@ Thumbs.db
 
 # Design assets (internal only)
 stitch/
+
+# Docker volumes
+influxdb-data/
+grafana-data/

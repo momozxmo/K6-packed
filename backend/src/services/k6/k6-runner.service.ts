@@ -1,11 +1,11 @@
-import { spawn, ChildProcess } from 'child_process';
+﻿import { spawn, ChildProcess } from 'child_process';
 import path from 'path';
 import os from 'os';
 import fs from 'fs';
-import { DbService } from './db.service';
+import { DbService } from '../core/db.service';
 import { ResultParserService } from './result-parser.service';
-import { EncryptionService } from './encryption.service';
-import { broadcastLog, broadcastProgress, broadcastComplete } from '../websocket/progress';
+import { EncryptionService } from '../core/encryption.service';
+import { broadcastLog, broadcastProgress, broadcastComplete } from '../../websocket/progress';
 
 interface TestConfig {
     targetUrl: string;
@@ -91,9 +91,12 @@ export class K6RunnerService {
             ASPNET_MODE: config.aspnetMode ? 'true' : 'false',
         };
 
+        const influxUrl = process.env.INFLUXDB_URL;
+
         const args = [
             'run',
             '--out', `json=${metricsFile}`,
+            ...(influxUrl ? ['--out', `influxdb=${influxUrl}`] : []),
             '--summary-export', summaryFile,
             scriptPath,
         ];
@@ -333,7 +336,7 @@ export class K6RunnerService {
                 );
                 resolve({
                     success: code === 0,
-                    message: code === 0 ? 'Dry run successful — login validated' : 'Dry run failed — check output for details',
+                    message: code === 0 ? 'Dry run successful â€” login validated' : 'Dry run failed â€” check output for details',
                     output: safeOutput,
                 });
             });

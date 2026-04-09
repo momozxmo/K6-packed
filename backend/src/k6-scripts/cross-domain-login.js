@@ -45,7 +45,7 @@ export const options = {
         },
     },
     thresholds: {
-        http_req_duration: ['p(95)<3000'],
+        http_req_duration: ['p(95)<3000', 'p(99)<5000'],
         errors: ['rate<0.1'],
     },
 };
@@ -75,7 +75,7 @@ export function setup() {
 // Main VU Function
 // ──────────────────────────────────────────────
 export default function (data) {
-    if (data?.dryRun) {
+    if (data && data.dryRun) {
         successfulLogins.add(1);
         console.log('✅ Dry run completed — login validated');
         return;

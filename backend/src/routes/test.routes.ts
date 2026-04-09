@@ -1,12 +1,12 @@
-import { Router, Request, Response } from 'express';
-import { DbService } from '../services/db.service';
-import { K6RunnerService } from '../services/k6-runner.service';
-import { EncryptionService } from '../services/encryption.service';
+﻿import { Router, Request, Response } from 'express';
+import { DbService } from '../services/core/db.service';
+import { K6RunnerService } from '../services/k6/k6-runner.service';
+import { EncryptionService } from '../services/core/encryption.service';
 
 export function createTestRoutes(dbService: DbService, k6Runner: K6RunnerService, encryption: EncryptionService): Router {
     const router = Router();
 
-    // POST /api/tests — Create and start a new test
+    // POST /api/tests â€” Create and start a new test
     router.post('/', async (req: Request, res: Response) => {
         try {
             const { targetUrl, authDomain, username, password, vus, duration, rampUp, postLoginUrls, loginFields, aspnetMode } = req.body;
@@ -16,8 +16,8 @@ export function createTestRoutes(dbService: DbService, k6Runner: K6RunnerService
                 return res.status(400).json({ error: 'targetUrl, username, and password are required' });
             }
 
-            if (vus && (vus < 1 || vus > 500)) {
-                return res.status(400).json({ error: 'VUs must be between 1 and 500' });
+            if (vus && (vus < 1 || vus > 9999)) {
+                return res.status(400).json({ error: 'VUs must be between 1 and 9999' });
             }
 
             try {
@@ -82,7 +82,7 @@ export function createTestRoutes(dbService: DbService, k6Runner: K6RunnerService
         }
     });
 
-    // GET /api/tests — Get all tests (with result metrics for history table)
+    // GET /api/tests â€” Get all tests (with result metrics for history table)
     router.get('/', (_req: Request, res: Response) => {
         try {
             const tests = dbService.getAllTestsWithResults().map(t => ({
@@ -95,10 +95,10 @@ export function createTestRoutes(dbService: DbService, k6Runner: K6RunnerService
         }
     });
 
-    // GET /api/tests/:id — Get single test
+    // GET /api/tests/:id â€” Get single test
     router.get('/:id', (req: Request, res: Response) => {
         try {
-            const test = dbService.getTest(parseInt(req.params.id));
+            const test = dbService.getTest(parseInt(req.params.id as string));
             if (!test) {
                 return res.status(404).json({ error: 'Test not found' });
             }
@@ -108,10 +108,10 @@ export function createTestRoutes(dbService: DbService, k6Runner: K6RunnerService
         }
     });
 
-    // DELETE /api/tests/:id — Delete test
+    // DELETE /api/tests/:id â€” Delete test
     router.delete('/:id', (req: Request, res: Response) => {
         try {
-            const id = parseInt(req.params.id);
+            const id = parseInt(req.params.id as string);
             const test = dbService.getTest(id);
             if (!test) {
                 return res.status(404).json({ error: 'Test not found' });
@@ -126,10 +126,10 @@ export function createTestRoutes(dbService: DbService, k6Runner: K6RunnerService
         }
     });
 
-    // POST /api/tests/:id/stop — Stop a running test
+    // POST /api/tests/:id/stop â€” Stop a running test
     router.post('/:id/stop', (req: Request, res: Response) => {
         try {
-            const id = parseInt(req.params.id);
+            const id = parseInt(req.params.id as string);
             const stopped = k6Runner.stopTest(id);
             if (stopped) {
                 res.json({ message: 'Test stop signal sent' });
@@ -141,7 +141,7 @@ export function createTestRoutes(dbService: DbService, k6Runner: K6RunnerService
         }
     });
 
-    // POST /api/tests/dry-run — Dry run (test login only)
+    // POST /api/tests/dry-run â€” Dry run (test login only)
     router.post('/dry-run', async (req: Request, res: Response) => {
         try {
             const { targetUrl, authDomain, username, password, loginFields, aspnetMode } = req.body;

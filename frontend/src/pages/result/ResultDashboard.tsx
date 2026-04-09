@@ -1,12 +1,13 @@
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import { useTestResults } from '../hooks/useTestResults';
-import { api } from '../lib/api';
-import { TestRecord } from '../types';
+﻿import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useTestResults } from '../../hooks/useTestResults';
+import { api } from '../../lib/api';
+import { TestRecord } from '../../types';
 import {
   LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis,
   CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell,
 } from 'recharts';
 import { useEffect, useMemo, useState } from 'react';
+import GrafanaEmbed from '../../components/GrafanaEmbed';
 
 const COLORS = {
   accent: '#00d4ff',
@@ -126,7 +127,7 @@ export default function ResultDashboard() {
 
   return (
     <div className="animate-fade-in">
-      {/* ═══ Dashboard Header ═══ */}
+      {/* â•â•â• Dashboard Header â•â•â• */}
       <section className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
         <div>
           <div className="flex items-center gap-3 mb-1">
@@ -175,7 +176,7 @@ export default function ResultDashboard() {
         </div>
       </section>
 
-      {/* ═══ Summary Cards — Bento Grid ═══ */}
+      {/* â•â•â• Summary Cards â€” Bento Grid â•â•â• */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 stagger-children">
         {/* Row 1 */}
         <MetricCard label="Total Requests" value={s.total_requests?.toLocaleString() || '0'} />
@@ -189,7 +190,7 @@ export default function ResultDashboard() {
         <MetricCard label="Avg Login Time" value={`${s.avg_login_duration?.toFixed(0) || 0}`} unit="ms" />
       </section>
 
-      {/* ═══ Charts Grid (2×2) ═══ */}
+      {/* â•â•â• Charts Grid (2Ã—2) â•â•â• */}
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* 1. Response Time Over Time */}
         <div className="card">
@@ -273,7 +274,7 @@ export default function ResultDashboard() {
         </div>
       </section>
 
-      {/* ═══ Bottom Detailed Analysis ═══ */}
+      {/* â•â•â• Bottom Detailed Analysis â•â•â• */}
       <section className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         {/* Response Time Distribution (Horizontal Bars) */}
         <div className="card">
@@ -339,11 +340,20 @@ export default function ResultDashboard() {
           </div>
         </div>
       </section>
+
+      {/* â•â•â• Grafana Deep Analytics (InfluxDB) â•â•â• */}
+      <section className="mt-8">
+        <GrafanaEmbed
+          from={test?.started_at ? new Date(test.started_at).toISOString() : 'now-30m'}
+          to={test?.completed_at ? new Date(test.completed_at).toISOString() : 'now'}
+          height={700}
+        />
+      </section>
     </div>
   );
 }
 
-/* ─── MetricCard Component ─── */
+/* â”€â”€â”€ MetricCard Component â”€â”€â”€ */
 function MetricCard({ label, value, unit, accent, color, danger }: { label: string; value: string; unit?: string; accent?: boolean; color?: string; danger?: boolean }) {
   return (
     <div className="bg-surface-container p-6 rounded-xl border border-outline-variant/10 flex flex-col justify-between relative overflow-hidden group hover:border-accent/20 transition-all duration-300">
@@ -360,7 +370,7 @@ function MetricCard({ label, value, unit, accent, color, danger }: { label: stri
   );
 }
 
-/* ─── Percentile Helper ─── */
+/* â”€â”€â”€ Percentile Helper â”€â”€â”€ */
 function percentile(arr: number[], p: number): number {
   if (arr.length === 0) return 0;
   const sorted = [...arr].sort((a, b) => a - b);

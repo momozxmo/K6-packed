@@ -1,10 +1,10 @@
-import { Router, Request, Response } from 'express';
-import { DbService } from '../services/db.service';
+﻿import { Router, Request, Response } from 'express';
+import { DbService } from '../services/core/db.service';
 
 export function createConfigRoutes(dbService: DbService): Router {
     const router = Router();
 
-    // POST /api/configs — Save a config
+    // POST /api/configs â€” Save a config
     router.post('/', (req: Request, res: Response) => {
         try {
             const { name, config } = req.body;
@@ -23,7 +23,7 @@ export function createConfigRoutes(dbService: DbService): Router {
         }
     });
 
-    // GET /api/configs — Get all saved configs
+    // GET /api/configs â€” Get all saved configs
     router.get('/', (_req: Request, res: Response) => {
         try {
             const configs = dbService.getAllConfigs().map(c => ({
@@ -36,10 +36,10 @@ export function createConfigRoutes(dbService: DbService): Router {
         }
     });
 
-    // DELETE /api/configs/:id — Delete a config
+    // DELETE /api/configs/:id â€” Delete a config
     router.delete('/:id', (req: Request, res: Response) => {
         try {
-            const id = parseInt(req.params.id);
+            const id = parseInt(req.params.id as string);
             const config = dbService.getConfig(id);
             if (!config) {
                 return res.status(404).json({ error: 'Config not found' });

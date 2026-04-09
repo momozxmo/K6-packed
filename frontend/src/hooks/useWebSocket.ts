@@ -39,7 +39,7 @@ export function useWebSocket({ testId, onMessage, onLog, onProgress, onComplete 
             onLog?.(msg.data);
             break;
           case 'progress':
-            setProgress(prev => ({ ...(prev || {}), ...(msg.data || {}) }));
+            setProgress((prev: Record<string, any> | null) => ({ ...(prev || {}), ...(msg.data || {}) }));
             onProgress?.(msg.data);
             break;
           case 'complete':

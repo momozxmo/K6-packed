@@ -1,0 +1,15 @@
+# Grafana Datasource Provisioning
+# Auto-configures InfluxDB as the default data source
+apiVersion: 1
+
+datasources:
+  - name: InfluxDB-K6
+    type: influxdb
+    access: proxy
+    url: http://influxdb:8086
+    database: k6
+    isDefault: true
+    editable: true
+    jsonData:
+      httpMode: GET
+      timeInterval: "5s"

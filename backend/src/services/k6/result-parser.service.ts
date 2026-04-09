@@ -127,7 +127,7 @@ export class ResultParserService {
         if (!metric) return 0;
         const values = metric.values || metric;
         // k6 summary exports percentiles as "p(90)", "p(95)", etc.
-        const pKey = `p(${parseFloat(p) * 100})`;
+        const pKey = `p(${Math.round(parseFloat(p) * 100)})`;
         return values[pKey] ?? 0;
     }
 

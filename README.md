@@ -74,37 +74,36 @@
 │                    Frontend (React + Vite)           │
 │  ┌───────────┐  ┌──────────────┐  ┌──────────────┐  │
 │  │ Test Form │  │ Live Monitor │  │  Dashboard   │  │
-│  │ (Config)  │  │ (WebSocket)  │  │  (Recharts)  │  │
-│  └───────────┘  └──────────────┘  └──────────────┘  │
-└──────────────────────┬──────────────────────────────┘
-                       │ REST API + WebSocket
-┌──────────────────────▼──────────────────────────────┐
-│               Backend (Node.js + Express)            │
-│  ┌───────────┐  ┌──────────────┐  ┌──────────────┐  │
-│  │ API Routes│  │ k6 Runner    │  │ Result Parser│  │
-│  │ (Express) │  │(child_process│  │ (JSON Parse) │  │
-│  └───────────┘  └──────────────┘  └──────────────┘  │
-│  ┌───────────┐  ┌──────────────┐                    │
-│  │ WebSocket │  │  Encryption  │                    │
-│  │ (ws)      │  │  (AES-256)   │                    │
-│  └───────────┘  └──────────────┘                    │
-└──────────────────────┬──────────────────────────────┘
-                       │
-        ┌──────────────▼──────────────┐
-        │     SQLite Database          │
-        │  (sql.js — In-process)       │
-        │  tests | results | metrics   │
-        │  configs                     │
-        └──────────────────────────────┘
+│  │ (Config)  │  │ (WebSocket)  │  │ (Grafana UI) │  │
+│  └───────────┘  └──────────────┘  └──────▲───────┘  │
+└──────────────────────┬───────────────────│──────────┘
+                       │ REST API + WS     │ (Embedded)
+┌──────────────────────▼───────────────────│──────────┐
+│               Backend (Node.js + Express)│          │
+│  ┌───────────┐  ┌──────────────┐         │          │
+│  │ API/WS    │  │ k6 Runner    │──────┐  │          │
+│  └───────────┘  └──────────────┘      │  │          │
+└──────────────────────┬────────────────│──│──────────┘
+                       │                │  │
+        ┌──────────────▼──────────┐  ┌──▼──┴──────────┐
+        │     SQLite Database      │  │   InfluxDB     │
+        │  (Config, Test History)  │  │ (Live Metrics) │
+        └──────────────────────────┘  └────────────────┘
+                                             ▲
+                                             │
+                                      ┌──────┴─────────┐
+                                      │    Grafana     │
+                                      └────────────────┘
 ```
 
 ### Data Flow
 
 1. ผู้ใช้กรอก Config ผ่านหน้าเว็บ → **REST API** ส่ง Config ไป Backend
-2. Backend สร้าง Test Record ใน SQLite → **Spawn k6 Process** พร้อม Environment Variables
-3. k6 Process รัน Cross-Domain Login Script → **stdout/stderr Stream** ส่งผ่าน WebSocket กลับ Frontend
-4. k6 Process เสร็จ → Backend **Parse JSON Summary** → บันทึก Results + Time-Series Metrics ลง SQLite
-5. Frontend ดึง Results ผ่าน REST API → **Recharts** แสดง Dashboard
+2. Backend ตรวจสอบ/บันทึก Configuration ลง **SQLite**
+3. Backend **Spawn k6 Process** พร้อม Environment Variables รันภายใน Docker Network
+4. k6 Stream log ผ่าน **WebSocket** กลับไปแสดงที่แผงวอลล์ (Frontend) และยิง Metrics ระดับ High-Volume เข้า **InfluxDB**
+5. Frontend แสดงกราฟ Real-time (Embedded) ที่ถูกดึงข้อมูลมาจาก **Grafana** (ต่อ InfluxDB)
+6. เมื่อทดสอบเสร็จ Backend จะบันทึกผลลัพธ์ภาพรวมกลับไปที่ SQLite เพื่อเรียกดูประวัติย้อนหลัง
 
 ---
 
@@ -113,14 +112,12 @@
 ```
 k6-load-test-app/
 ├── 📄 README.md                      # ไฟล์นี้
-├── 📄 package.json                   # Root workspace (npm workspaces)
+├── 📄 docker-compose.yml             # Orchestration สำหรับทุก Container
 ├── 📄 .env                           # Environment variables
 │
 ├── 📂 backend/                       # Node.js + Express Backend
-│   ├── 📄 package.json
-│   ├── 📄 tsconfig.json
+│   ├── 📄 Dockerfile
 │   ├── 📂 data/                      # SQLite database file
-│   │   └── 📄 k6-dashboard.db
 │   └── 📂 src/
 │       ├── 📄 index.ts               # Express app entry point
 │       ├── 📂 routes/
@@ -128,41 +125,33 @@ k6-load-test-app/
 │       │   ├── 📄 result.routes.ts   # Results + Export (JSON/CSV)
 │       │   └── 📄 config.routes.ts   # Saved Configurations CRUD
 │       ├── 📂 services/
-│       │   ├── 📄 k6-runner.service.ts    # k6 Process Management
-│       │   ├── 📄 result-parser.service.ts # Parse k6 JSON Output
-│       │   ├── 📄 db.service.ts           # SQLite Operations (sql.js)
-│       │   └── 📄 encryption.service.ts   # AES Password Encryption
-│       ├── 📂 models/
-│       │   └── 📄 schema.ts          # Database Schema & Init
-│       ├── 📂 websocket/
-│       │   └── 📄 progress.ts        # WebSocket Live Progress
-│       └── 📂 k6-scripts/
-│           └── 📄 cross-domain-login.js  # ★ k6 Test Script หลัก
+│       │   ├── 📂 core/              # Infrastructure / Core services
+│       │   │   ├── 📄 db.service.ts
+│       │   │   └── 📄 encryption.service.ts
+│       │   └── 📂 k6/                # K6 Load testing engines
+│       │       ├── 📄 k6-runner.service.ts
+│       │       └── 📄 result-parser.service.ts
+│       ├── 📂 websocket/             # WebSocket Live Progress
+│       └── 📂 k6-scripts/            # ★ k6 Test Script หลัก
 │
-└── 📂 frontend/                      # React + Vite Frontend
-    ├── 📄 package.json
-    ├── 📄 index.html                 # HTML Entry (Google Fonts, Material Icons)
-    ├── 📄 vite.config.ts             # Vite Config + API/WS Proxy
-    ├── 📄 tailwind.config.js         # Tailwind CSS Config (Mission Control theme)
-    ├── 📄 tsconfig.json
-    └── 📂 src/
-        ├── 📄 App.tsx                # Main App + Sidebar Navigation + Routing
-        ├── 📄 main.tsx               # React Entry Point
-        ├── 📄 index.css              # Global Styles + Design Tokens
-        ├── 📂 pages/
-        │   ├── 📄 HomePage.tsx            # Test Configuration Form
-        │   ├── 📄 TestRunningPage.tsx     # Live Monitor (WebSocket)
-        │   ├── 📄 ResultDashboard.tsx     # Results Dashboard (Charts)
-        │   ├── 📄 ResultsPage.tsx         # Results Archive
-        │   ├── 📄 HistoryPage.tsx         # Test History Table
-        │   └── 📄 CompareResultsPage.tsx  # Side-by-Side Comparison
-        ├── 📂 hooks/
-        │   ├── 📄 useWebSocket.ts    # WebSocket Connection Hook
-        │   └── 📄 useTestResults.ts  # Fetch Results Hook
-        ├── 📂 lib/
-        │   └── 📄 api.ts             # REST API Client
-        └── 📂 types/
-            └── 📄 index.ts           # TypeScript Type Definitions
+├── 📂 frontend/                      # React + Vite Frontend
+│   ├── 📄 Dockerfile
+│   ├── 📄 nginx.conf
+│   └── 📂 src/
+│       ├── 📄 App.tsx                # Main App + Sidebar Navigation + Routing
+│       ├── 📂 pages/
+│       │   ├── 📂 test/              # หน้าเว็บที่เกี่ยวกับการ Config & Run Test
+│       │   │   ├── 📄 HomePage.tsx
+│       │   │   └── 📄 TestRunningPage.tsx
+│       │   └── 📂 result/            # หน้าเว็บที่เกี่ยวกับการดูผลลัพธ์
+│       │       ├── 📄 ResultDashboard.tsx
+│       │       ├── 📄 ResultsPage.tsx
+│       │       ├── 📄 HistoryPage.tsx
+│       │       └── 📄 CompareResultsPage.tsx
+│       ├── 📂 components/            # Components ที่ใช้ซ้ำ (เช่น GrafanaEmbed)
+│       └── 📂 hooks/                 # Custom React Hooks
+│
+└── 📂 grafana-provisioning/          # ตั้งค่า Data Source และ Dashboard ของ Grafana
 ```
 
 ---
@@ -628,8 +617,8 @@ VITE_WS_URL=ws://127.0.0.1:3002
 - [ ] **Scheduled Tests** — ตั้งเวลาให้รัน Test อัตโนมัติ (Cron)
 - [ ] **Alert / Notification** — แจ้งเตือนเมื่อ P95 เกิน Threshold
 - [ ] **Multi-Scenario Support** — รัน Scenario หลายๆ แบบในเทสเดียว
-- [ ] **Grafana Integration** — ส่ง Metrics ไป Grafana ด้วย InfluxDB
-- [ ] **Docker Compose** — รัน k6 ใน Container พร้อม InfluxDB + Grafana
+- [x] **Grafana Integration** — ส่ง Metrics ไป Grafana ด้วย InfluxDB
+- [x] **Docker Compose** — Containerized architecture พร้อม InfluxDB + Grafana
 - [ ] **PDF Report** — สร้าง Report อัตโนมัติ
 - [ ] **Test Templates** — เก็บ Template สำหรับ Login Flow ที่แตกต่างกัน (OAuth, SAML, Basic Auth)
 

@@ -1,7 +1,7 @@
-import { useState, useEffect, useMemo } from 'react';
+﻿import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api } from '../lib/api';
-import { TestRecord } from '../types';
+import { api } from '../../lib/api';
+import { TestRecord } from '../../types';
 
 type SortField = 'id' | 'target_url' | 'vus' | 'duration' | 'avg_response_time' | 'p95_response_time' | 'error_rate' | 'status' | 'created_at';
 type SortDir = 'asc' | 'desc';
@@ -137,7 +137,7 @@ export default function HistoryPage() {
     if (errorRate === undefined || errorRate === null || test.status === 'running' || test.status === 'pending') {
       return (
         <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-500/10 text-slate-400 text-[10px] font-bold">
-          <span className="w-1 h-1 rounded-full bg-slate-500" /> —
+          <span className="w-1 h-1 rounded-full bg-slate-500" /> â€”
         </span>
       );
     }
@@ -298,17 +298,17 @@ export default function HistoryPage() {
                   <td className="py-4 px-4 text-right font-mono text-text-surface">{test.vus?.toLocaleString()}</td>
                   <td className="py-4 px-4 text-right font-mono text-slate-400">{test.duration}</td>
                   <td className={`py-4 px-4 text-right font-mono ${avgColor(test.avg_response_time)}`}>
-                    {test.avg_response_time != null ? test.avg_response_time.toFixed(1) : '—'}
+                    {test.avg_response_time != null ? test.avg_response_time.toFixed(1) : 'â€”'}
                   </td>
                   <td className="py-4 px-4 text-right font-mono text-text-surface">
-                    {test.p95_response_time != null ? test.p95_response_time.toFixed(1) : '—'}
+                    {test.p95_response_time != null ? test.p95_response_time.toFixed(1) : 'â€”'}
                   </td>
                   <td className="py-4 px-4 text-center">{errorBadge(test)}</td>
                   <td className="py-4 px-4 text-center">{statusBadge(test.status)}</td>
                   <td className="py-4 px-4 text-slate-500 text-xs">
                     {test.created_at ? new Date(test.created_at).toLocaleDateString('en', {
                       month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
-                    }) : '—'}
+                    }) : 'â€”'}
                   </td>
                   <td className="py-4 px-6 text-right">
                     <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">

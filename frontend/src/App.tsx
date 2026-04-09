@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 import { Activity } from 'lucide-react';
-import HomePage from './pages/HomePage';
-import TestRunningPage from './pages/TestRunningPage';
-import ResultDashboard from './pages/ResultDashboard';
-import HistoryPage from './pages/HistoryPage';
-import ResultsPage from './pages/ResultsPage';
-import CompareResultsPage from './pages/CompareResultsPage';
+import HomePage from './pages/test/HomePage';
+import TestRunningPage from './pages/test/TestRunningPage';
+import ResultDashboard from './pages/result/ResultDashboard';
+import HistoryPage from './pages/result/HistoryPage';
+import ResultsPage from './pages/result/ResultsPage';
+import CompareResultsPage from './pages/result/CompareResultsPage';
 import { api } from './lib/api';
 import { TestRecord } from './types';
 
