@@ -18,7 +18,7 @@ interface GrafanaEmbedProps {
 export default function GrafanaEmbed({
   from = 'now-15m',
   to = 'now',
-  height = 720,
+  height = 900,
   panelId,
   className = '',
 }: GrafanaEmbedProps) {
@@ -70,7 +70,7 @@ export default function GrafanaEmbed({
       {/* Iframe Container */}
       <div
         className="relative rounded-xl overflow-hidden border border-outline-variant/10 bg-[#0b0c10]"
-        style={{ height: `${height}px` }}
+        style={{ height: `${height}px`, overflow: 'hidden' }}
       >
         {/* Loading Overlay */}
         {isLoading && !hasError && (
@@ -110,13 +110,15 @@ export default function GrafanaEmbed({
         <iframe
           src={embedUrl}
           width="100%"
-          height="100%"
+          height={height + 50}
           frameBorder="0"
+          scrolling="no"
           onLoad={() => setIsLoading(false)}
           onError={() => { setIsLoading(false); setHasError(true); }}
           style={{
             border: 'none',
             backgroundColor: '#0b0c10',
+            overflow: 'hidden',
           }}
           title="Grafana K6 Dashboard"
           sandbox="allow-scripts allow-same-origin allow-popups"
