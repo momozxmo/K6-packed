@@ -96,7 +96,7 @@ export default function HomePage() {
     }
     if (!config.username) errs.username = 'Username is required';
     if (!config.password) errs.password = 'Password is required';
-    if (config.vus < 1 || config.vus > 500) errs.vus = 'VUs must be 1-500';
+    if (config.vus < 1 || config.vus > 9999) errs.vus = 'VUs must be 1-9999';
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -282,24 +282,24 @@ export default function HomePage() {
                     <input
                       type="number"
                       min={1}
-                      max={500}
+                      max={9999}
                       className="bg-transparent border-none text-accent font-mono font-bold text-right w-12 p-0 focus:ring-0 focus:outline-none"
                       value={config.vus}
-                      onChange={e => setConfig(prev => ({ ...prev, vus: Math.min(500, Math.max(1, parseInt(e.target.value) || 1)) }))}
+                      onChange={e => setConfig(prev => ({ ...prev, vus: Math.min(9999, Math.max(1, parseInt(e.target.value) || 1)) }))}
                     />
                   </div>
                 </div>
                 <input
                   type="range"
                   min={1}
-                  max={500}
+                  max={9999}
                   className="w-full h-1 bg-surface-high rounded-lg appearance-none cursor-pointer"
                   value={config.vus}
                   onChange={e => setConfig(prev => ({ ...prev, vus: parseInt(e.target.value) }))}
                 />
                 <div className="flex justify-between mt-2 font-mono text-[10px] text-slate-600">
                   <span>1 VU</span>
-                  <span>500 VUs</span>
+                  <span>9999 VUs</span>
                 </div>
                 {errors.vus && <p className="text-danger-light text-xs mt-1">{errors.vus}</p>}
               </div>
