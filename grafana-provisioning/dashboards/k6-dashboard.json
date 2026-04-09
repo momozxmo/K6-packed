@@ -19,85 +19,38 @@
   "links": [],
   "panels": [
     {
-      "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
-      "id": 100,
-      "title": "⚡ OVERVIEW",
-      "type": "row"
-    },
-    {
       "datasource": "InfluxDB-K6",
       "fieldConfig": {
         "defaults": {
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "#00d4ff", "value": null }
+              { "color": "#e0e0e0", "value": null }
             ]
           },
           "color": { "mode": "thresholds" },
-          "unit": "none"
+          "unit": "short"
         }
       },
-      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 },
+      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 0 },
       "id": 1,
       "options": {
         "reduceOptions": {
-          "calcs": ["max"],
+          "calcs": ["sum"],
           "fields": "",
           "values": false
         },
         "orientation": "auto",
-        "textMode": "auto",
+        "textMode": "value_and_name",
         "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "auto"
       },
-      "title": "Active VUs",
+      "title": "TOTAL REQUESTS",
       "type": "stat",
       "targets": [
         {
-          "alias": "VUs",
-          "groupBy": [{ "params": ["$__interval"], "type": "time" }],
-          "measurement": "vus",
-          "select": [[{ "params": ["value"], "type": "field" }, { "params": [], "type": "last" }]],
-          "tags": []
-        }
-      ]
-    },
-    {
-      "datasource": "InfluxDB-K6",
-      "fieldConfig": {
-        "defaults": {
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "#00ff88", "value": null }
-            ]
-          },
-          "color": { "mode": "thresholds" },
-          "unit": "reqps"
-        }
-      },
-      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 1 },
-      "id": 2,
-      "options": {
-        "reduceOptions": {
-          "calcs": ["mean"],
-          "fields": "",
-          "values": false
-        },
-        "orientation": "auto",
-        "textMode": "auto",
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto"
-      },
-      "title": "Requests / sec",
-      "type": "stat",
-      "targets": [
-        {
-          "alias": "RPS",
+          "alias": "Total Requests",
           "groupBy": [{ "params": ["$__interval"], "type": "time" }],
           "measurement": "http_reqs",
           "select": [[{ "params": ["value"], "type": "field" }, { "params": [], "type": "count" }]],
@@ -121,8 +74,8 @@
           "unit": "ms"
         }
       },
-      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 1 },
-      "id": 3,
+      "gridPos": { "h": 5, "w": 6, "x": 6, "y": 0 },
+      "id": 2,
       "options": {
         "reduceOptions": {
           "calcs": ["mean"],
@@ -130,16 +83,16 @@
           "values": false
         },
         "orientation": "auto",
-        "textMode": "auto",
+        "textMode": "value_and_name",
         "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "auto"
       },
-      "title": "Avg Response Time",
+      "title": "AVG RESPONSE TIME",
       "type": "stat",
       "targets": [
         {
-          "alias": "Avg Resp",
+          "alias": "Avg Response Time",
           "groupBy": [{ "params": ["$__interval"], "type": "time" }],
           "measurement": "http_req_duration",
           "select": [[{ "params": ["value"], "type": "field" }, { "params": [], "type": "mean" }]],
@@ -154,17 +107,17 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "#00d4ff", "value": null },
-              { "color": "#ffaa00", "value": 1000 },
-              { "color": "#ff4466", "value": 3000 }
+              { "color": "#00ff88", "value": null },
+              { "color": "#ffaa00", "value": 500 },
+              { "color": "#ff4466", "value": 2000 }
             ]
           },
           "color": { "mode": "thresholds" },
           "unit": "ms"
         }
       },
-      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 1 },
-      "id": 4,
+      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 0 },
+      "id": 3,
       "options": {
         "reduceOptions": {
           "calcs": ["mean"],
@@ -172,16 +125,16 @@
           "values": false
         },
         "orientation": "auto",
-        "textMode": "auto",
+        "textMode": "value_and_name",
         "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "auto"
       },
-      "title": "P95 Latency",
+      "title": "P95 LATENCY",
       "type": "stat",
       "targets": [
         {
-          "alias": "P95",
+          "alias": "P95 Latency",
           "groupBy": [{ "params": ["$__interval"], "type": "time" }],
           "measurement": "http_req_duration",
           "select": [[{ "params": ["value"], "type": "field" }, { "params": ["95"], "type": "percentile" }]],
@@ -196,17 +149,15 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "#00ff88", "value": null },
-              { "color": "#ffaa00", "value": 0.01 },
-              { "color": "#ff4466", "value": 0.05 }
+              { "color": "#ff4466", "value": null }
             ]
           },
           "color": { "mode": "thresholds" },
-          "unit": "percentunit"
+          "unit": "ms"
         }
       },
-      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 },
-      "id": 5,
+      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 0 },
+      "id": 4,
       "options": {
         "reduceOptions": {
           "calcs": ["mean"],
@@ -214,69 +165,22 @@
           "values": false
         },
         "orientation": "auto",
-        "textMode": "auto",
+        "textMode": "value_and_name",
         "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "auto"
       },
-      "title": "Error Rate",
+      "title": "P99 LATENCY",
       "type": "stat",
       "targets": [
         {
-          "alias": "Errors",
+          "alias": "P99 Latency",
           "groupBy": [{ "params": ["$__interval"], "type": "time" }],
-          "measurement": "http_req_failed",
-          "select": [[{ "params": ["value"], "type": "field" }, { "params": [], "type": "mean" }]],
+          "measurement": "http_req_duration",
+          "select": [[{ "params": ["value"], "type": "field" }, { "params": ["99"], "type": "percentile" }]],
           "tags": []
         }
       ]
-    },
-    {
-      "datasource": "InfluxDB-K6",
-      "fieldConfig": {
-        "defaults": {
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "#a8e8ff", "value": null }
-            ]
-          },
-          "color": { "mode": "thresholds" },
-          "unit": "decbytes"
-        }
-      },
-      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 1 },
-      "id": 6,
-      "options": {
-        "reduceOptions": {
-          "calcs": ["sum"],
-          "fields": "",
-          "values": false
-        },
-        "orientation": "auto",
-        "textMode": "auto",
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto"
-      },
-      "title": "Data Received",
-      "type": "stat",
-      "targets": [
-        {
-          "alias": "Data",
-          "groupBy": [{ "params": ["$__interval"], "type": "time" }],
-          "measurement": "data_received",
-          "select": [[{ "params": ["value"], "type": "field" }, { "params": [], "type": "sum" }]],
-          "tags": []
-        }
-      ]
-    },
-    {
-      "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
-      "id": 101,
-      "title": "📊 PERFORMANCE",
-      "type": "row"
     },
     {
       "datasource": "InfluxDB-K6",
@@ -286,7 +190,7 @@
             "drawStyle": "line",
             "lineInterpolation": "smooth",
             "lineWidth": 2,
-            "fillOpacity": 15,
+            "fillOpacity": 20,
             "gradientMode": "scheme",
             "pointSize": 5,
             "showPoints": "never"
@@ -296,20 +200,20 @@
         },
         "overrides": [
           {
+            "matcher": { "id": "byName", "options": "Avg" },
+            "properties": [{ "id": "color", "value": { "fixedColor": "#00d4ff", "mode": "fixed" } }]
+          },
+          {
             "matcher": { "id": "byName", "options": "P95" },
             "properties": [{ "id": "color", "value": { "fixedColor": "#ffaa00", "mode": "fixed" } }]
           },
           {
             "matcher": { "id": "byName", "options": "P99" },
             "properties": [{ "id": "color", "value": { "fixedColor": "#ff4466", "mode": "fixed" } }]
-          },
-          {
-            "matcher": { "id": "byName", "options": "Avg" },
-            "properties": [{ "id": "color", "value": { "fixedColor": "#00d4ff", "mode": "fixed" } }]
           }
         ]
       },
-      "gridPos": { "h": 10, "w": 12, "x": 0, "y": 6 },
+      "gridPos": { "h": 10, "w": 12, "x": 0, "y": 5 },
       "id": 10,
       "options": {
         "tooltip": { "mode": "multi", "sort": "desc" },
@@ -357,7 +261,7 @@
           "color": { "fixedColor": "#00ff88", "mode": "fixed" }
         }
       },
-      "gridPos": { "h": 10, "w": 12, "x": 12, "y": 6 },
+      "gridPos": { "h": 10, "w": 12, "x": 12, "y": 5 },
       "id": 11,
       "options": {
         "tooltip": { "mode": "single" },
@@ -391,13 +295,13 @@
           "color": { "fixedColor": "#a8e8ff", "mode": "fixed" }
         }
       },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 },
+      "gridPos": { "h": 10, "w": 12, "x": 0, "y": 15 },
       "id": 12,
       "options": {
         "tooltip": { "mode": "single" },
         "legend": { "displayMode": "list", "placement": "bottom" }
       },
-      "title": "Virtual Users (VUs)",
+      "title": "ACTIVE VIRTUAL USERS",
       "type": "timeseries",
       "targets": [
         {
@@ -416,22 +320,40 @@
           "custom": {
             "drawStyle": "bars",
             "lineWidth": 0,
-            "fillOpacity": 80,
+            "fillOpacity": 70,
+            "barWidthFactor": 0.8,
             "showPoints": "never"
           },
           "unit": "percentunit",
-          "color": { "fixedColor": "#ff4466", "mode": "fixed" },
+          "color": { "mode": "palette-classic" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "#00ff88", "value": null },
+              { "color": "#ffaa00", "value": 0.01 },
+              { "color": "#ff4466", "value": 0.05 }
+            ]
+          },
           "max": 1,
           "min": 0
-        }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Error Rate" },
+            "properties": [
+              { "id": "custom.fillOpacity", "value": 80 },
+              { "id": "color", "value": { "mode": "thresholds" } }
+            ]
+          }
+        ]
       },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 16 },
+      "gridPos": { "h": 10, "w": 12, "x": 12, "y": 15 },
       "id": 13,
       "options": {
         "tooltip": { "mode": "single" },
         "legend": { "displayMode": "list", "placement": "bottom" }
       },
-      "title": "HTTP Errors",
+      "title": "ERROR RATE OVER TIME",
       "type": "timeseries",
       "targets": [
         {
@@ -444,71 +366,73 @@
       ]
     },
     {
-      "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 24 },
-      "id": 102,
-      "title": "⏱️ TIMING BREAKDOWN",
-      "type": "row"
-    },
-    {
       "datasource": "InfluxDB-K6",
       "fieldConfig": {
         "defaults": {
           "custom": {
-            "drawStyle": "line",
-            "lineInterpolation": "smooth",
-            "lineWidth": 1,
-            "fillOpacity": 10,
+            "drawStyle": "bars",
+            "lineWidth": 0,
+            "fillOpacity": 80,
+            "barWidthFactor": 0.9,
             "showPoints": "never",
-            "stacking": { "mode": "normal" }
+            "axisCenteredZero": false
           },
           "unit": "ms",
           "color": { "mode": "palette-classic" }
-        }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "0-100ms" },
+            "properties": [{ "id": "color", "value": { "fixedColor": "#00ff88", "mode": "fixed" } }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "100-200ms" },
+            "properties": [{ "id": "color", "value": { "fixedColor": "#00d4ff", "mode": "fixed" } }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "200-500ms" },
+            "properties": [{ "id": "color", "value": { "fixedColor": "#ffaa00", "mode": "fixed" } }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "500ms+" },
+            "properties": [{ "id": "color", "value": { "fixedColor": "#ff4466", "mode": "fixed" } }]
+          }
+        ]
       },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 25 },
+      "gridPos": { "h": 10, "w": 12, "x": 0, "y": 25 },
       "id": 20,
       "options": {
         "tooltip": { "mode": "multi", "sort": "desc" },
-        "legend": { "displayMode": "list", "placement": "bottom" }
+        "legend": { "displayMode": "list", "placement": "bottom" },
+        "orientation": "horizontal"
       },
-      "title": "Request Timing Breakdown",
-      "type": "timeseries",
+      "title": "RESPONSE TIME DISTRIBUTION (HISTOGRAM)",
+      "type": "barchart",
+      "transformations": [],
       "targets": [
         {
-          "alias": "Connecting",
-          "groupBy": [{ "params": ["$__interval"], "type": "time" }, { "params": ["null"], "type": "fill" }],
-          "measurement": "http_req_connecting",
-          "select": [[{ "params": ["value"], "type": "field" }, { "params": [], "type": "mean" }]],
-          "tags": []
+          "alias": "0-100ms",
+          "groupBy": [],
+          "measurement": "http_req_duration",
+          "select": [[{ "params": ["value"], "type": "field" }, { "params": [], "type": "count" }]],
+          "tags": [{ "key": "value", "operator": "<", "value": "100" }],
+          "rawQuery": true,
+          "query": "SELECT count(\"value\") AS \"0-100ms\" FROM \"http_req_duration\" WHERE $timeFilter AND \"value\" < 100"
         },
         {
-          "alias": "TLS Handshake",
-          "groupBy": [{ "params": ["$__interval"], "type": "time" }, { "params": ["null"], "type": "fill" }],
-          "measurement": "http_req_tls_handshaking",
-          "select": [[{ "params": ["value"], "type": "field" }, { "params": [], "type": "mean" }]],
-          "tags": []
+          "alias": "100-200ms",
+          "rawQuery": true,
+          "query": "SELECT count(\"value\") AS \"100-200ms\" FROM \"http_req_duration\" WHERE $timeFilter AND \"value\" >= 100 AND \"value\" < 200"
         },
         {
-          "alias": "Sending",
-          "groupBy": [{ "params": ["$__interval"], "type": "time" }, { "params": ["null"], "type": "fill" }],
-          "measurement": "http_req_sending",
-          "select": [[{ "params": ["value"], "type": "field" }, { "params": [], "type": "mean" }]],
-          "tags": []
+          "alias": "200-500ms",
+          "rawQuery": true,
+          "query": "SELECT count(\"value\") AS \"200-500ms\" FROM \"http_req_duration\" WHERE $timeFilter AND \"value\" >= 200 AND \"value\" < 500"
         },
         {
-          "alias": "Waiting (TTFB)",
-          "groupBy": [{ "params": ["$__interval"], "type": "time" }, { "params": ["null"], "type": "fill" }],
-          "measurement": "http_req_waiting",
-          "select": [[{ "params": ["value"], "type": "field" }, { "params": [], "type": "mean" }]],
-          "tags": []
-        },
-        {
-          "alias": "Receiving",
-          "groupBy": [{ "params": ["$__interval"], "type": "time" }, { "params": ["null"], "type": "fill" }],
-          "measurement": "http_req_receiving",
-          "select": [[{ "params": ["value"], "type": "field" }, { "params": [], "type": "mean" }]],
-          "tags": []
+          "alias": "500ms+",
+          "rawQuery": true,
+          "query": "SELECT count(\"value\") AS \"500ms+\" FROM \"http_req_duration\" WHERE $timeFilter AND \"value\" >= 500"
         }
       ]
     },
@@ -517,11 +441,10 @@
       "fieldConfig": {
         "defaults": {
           "custom": {
-            "drawStyle": "line",
-            "lineInterpolation": "smooth",
-            "lineWidth": 2,
-            "fillOpacity": 15,
-            "gradientMode": "scheme",
+            "drawStyle": "bars",
+            "lineWidth": 0,
+            "fillOpacity": 90,
+            "barWidthFactor": 0.6,
             "showPoints": "never"
           },
           "unit": "ms",
@@ -529,37 +452,52 @@
         },
         "overrides": [
           {
-            "matcher": { "id": "byName", "options": "Login Duration" },
+            "matcher": { "id": "byName", "options": "P50 - MEDIAN" },
+            "properties": [{ "id": "color", "value": { "fixedColor": "#64748b", "mode": "fixed" } }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "P90 - HIGH" },
+            "properties": [{ "id": "color", "value": { "fixedColor": "#00d4ff", "mode": "fixed" } }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "P95 - CRITICAL" },
             "properties": [{ "id": "color", "value": { "fixedColor": "#ffaa00", "mode": "fixed" } }]
           },
           {
-            "matcher": { "id": "byName", "options": "Page Load" },
-            "properties": [{ "id": "color", "value": { "fixedColor": "#00d4ff", "mode": "fixed" } }]
+            "matcher": { "id": "byName", "options": "P99 - EXTREME" },
+            "properties": [{ "id": "color", "value": { "fixedColor": "#ff4466", "mode": "fixed" } }]
           }
         ]
       },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 25 },
+      "gridPos": { "h": 10, "w": 12, "x": 12, "y": 25 },
       "id": 21,
       "options": {
         "tooltip": { "mode": "multi", "sort": "desc" },
-        "legend": { "displayMode": "list", "placement": "bottom" }
+        "legend": { "displayMode": "list", "placement": "bottom" },
+        "orientation": "horizontal"
       },
-      "title": "Login & Page Load Duration",
-      "type": "timeseries",
+      "title": "Latency Percentiles",
+      "type": "barchart",
       "targets": [
         {
-          "alias": "Login Duration",
-          "groupBy": [{ "params": ["$__interval"], "type": "time" }, { "params": ["null"], "type": "fill" }],
-          "measurement": "login_duration",
-          "select": [[{ "params": ["value"], "type": "field" }, { "params": [], "type": "mean" }]],
-          "tags": []
+          "alias": "P50 - MEDIAN",
+          "rawQuery": true,
+          "query": "SELECT percentile(\"value\", 50) AS \"P50 - MEDIAN\" FROM \"http_req_duration\" WHERE $timeFilter"
         },
         {
-          "alias": "Page Load",
-          "groupBy": [{ "params": ["$__interval"], "type": "time" }, { "params": ["null"], "type": "fill" }],
-          "measurement": "page_load_duration",
-          "select": [[{ "params": ["value"], "type": "field" }, { "params": [], "type": "mean" }]],
-          "tags": []
+          "alias": "P90 - HIGH",
+          "rawQuery": true,
+          "query": "SELECT percentile(\"value\", 90) AS \"P90 - HIGH\" FROM \"http_req_duration\" WHERE $timeFilter"
+        },
+        {
+          "alias": "P95 - CRITICAL",
+          "rawQuery": true,
+          "query": "SELECT percentile(\"value\", 95) AS \"P95 - CRITICAL\" FROM \"http_req_duration\" WHERE $timeFilter"
+        },
+        {
+          "alias": "P99 - EXTREME",
+          "rawQuery": true,
+          "query": "SELECT percentile(\"value\", 99) AS \"P99 - EXTREME\" FROM \"http_req_duration\" WHERE $timeFilter"
         }
       ]
     }
@@ -574,5 +512,5 @@
   "timezone": "",
   "title": "K6 Load Testing Results",
   "uid": "k6-dashboard",
-  "version": 1
+  "version": 2
 }
