@@ -233,7 +233,31 @@ npm install
 # 3. ตั้งค่า Environment Variables
 cp .env.example .env    # หรือแก้ไข .env ตามต้องการ
 
-# 4. Start development (frontend + backend พร้อมกัน)
+### 🐳 Run with Docker (Recommended)
+
+วิธีที่ง่ายและเสถียรที่สุดคือการรันผ่าน Docker ซึ่งจะแพ็กเกจ InfluxDB และ Grafana มาให้พร้อมใช้งานทันที:
+
+```bash
+# 1. Clone repository
+git clone https://github.com/<your-username>/k6-load-test-dashboard.git
+cd k6-load-test-dashboard
+
+# 2. ตั้งค่า Environment Variables
+cp .env.example .env
+
+# 3. รันระบบทั้งหมด
+docker-compose up -d --build
+
+# 4. หากต้องการหยุดระบบ
+docker-compose down
+```
+
+### 💻 Run Locally (Development)
+
+หากต้องการพัฒนาโค้ด สามารถรันแบบแยกส่วนได้:
+
+```bash
+npm install
 npm run dev
 ```
 
@@ -241,12 +265,12 @@ npm run dev
 
 | Service | URL |
 |---|---|
-| 🖥️ **Frontend** | http://127.0.0.1:5173 |
+| 🖥️ **Frontend / Mission Control** | http://127.0.0.1 (Docker) หรือ http://127.0.0.1:5173 (Local) |
+| 📊 **Grafana Dashboard** | http://127.0.0.1:3000 |
 | ⚙️ **Backend API** | http://127.0.0.1:3001 |
 | 🔌 **WebSocket** | ws://127.0.0.1:3001/ws/test/:id |
-| ❤️ **Health Check** | http://127.0.0.1:3001/api/health |
 
-### Available Scripts
+### Available Scripts (Local Dev)
 
 ```bash
 # รัน Frontend + Backend พร้อมกัน
