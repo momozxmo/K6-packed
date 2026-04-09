@@ -157,7 +157,10 @@ export default function TestRunningPage() {
       </section>
 
       {/* ═══ Grafana Dashboard ═══ */}
-      <GrafanaEmbed />
+      <GrafanaEmbed
+        from={test?.started_at ? new Date(test.started_at).getTime().toString() : (startTime - 60000).toString()}
+        to={completed && test?.completed_at ? new Date(test.completed_at).getTime().toString() : 'now'}
+      />
 
       {/* ═══ Live Telemetry Log Panel ═══ */}
       <section className="flex-1 flex flex-col bg-surface-lowest rounded-xl border border-outline-variant/10 overflow-hidden min-h-[400px]">

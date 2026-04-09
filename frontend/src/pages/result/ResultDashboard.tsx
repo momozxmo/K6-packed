@@ -192,7 +192,10 @@ export default function ResultDashboard() {
 
       {/* ═══ Grafana Dashboard ═══ */}
       <section className="mb-8">
-        <GrafanaEmbed />
+        <GrafanaEmbed
+          from={test?.started_at ? new Date(test.started_at).getTime().toString() : 'now-30m'}
+          to={test?.completed_at ? new Date(test.completed_at).getTime().toString() : 'now'}
+        />
       </section>
 
       {/* ═══ Charts Grid (2×2) ═══ */}
