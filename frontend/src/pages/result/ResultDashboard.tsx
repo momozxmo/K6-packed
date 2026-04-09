@@ -2,6 +2,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useTestResults } from '../../hooks/useTestResults';
 import { api } from '../../lib/api';
 import { TestRecord } from '../../types';
+import GrafanaEmbed from '../../components/GrafanaEmbed';
 import {
   LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis,
   CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell,
@@ -187,6 +188,11 @@ export default function ResultDashboard() {
         <MetricCard label="Error Rate" value={`${((s.error_rate || 0) * 100).toFixed(2)}`} unit="%" color={s.error_rate > 0.05 ? 'danger' : 'normal'} danger={s.error_rate > 0.05} />
         <MetricCard label="Login Success" value={`${((s.login_success_rate || 0) * 100).toFixed(1)}`} unit="%" color="success" />
         <MetricCard label="Avg Login Time" value={`${s.avg_login_duration?.toFixed(0) || 0}`} unit="ms" />
+      </section>
+
+      {/* ═══ Grafana Dashboard ═══ */}
+      <section className="mb-8">
+        <GrafanaEmbed />
       </section>
 
       {/* ═══ Charts Grid (2×2) ═══ */}
